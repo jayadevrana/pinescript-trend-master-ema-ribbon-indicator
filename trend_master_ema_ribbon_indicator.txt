@@ -1,0 +1,58 @@
+//@version=5
+indicator("Trend master", overlay=true)
+
+// Define new EMAs
+ema20 = ta.ema(close, 20)
+ema25 = ta.ema(close, 25)
+ema30 = ta.ema(close, 30)
+ema35 = ta.ema(close, 35)
+ema40 = ta.ema(close, 40)
+ema45 = ta.ema(close, 45)
+ema50 = ta.ema(close, 50)
+ema55 = ta.ema(close, 55)
+
+// Determine trend
+uptrend = ema20 > ema25 and ema25 > ema30 and ema30 > ema35 and ema35 > ema40 and ema40 > ema45 and ema45 > ema50 and ema50 > ema55
+downtrend = ema20 < ema25 and ema25 < ema30 and ema30 < ema35 and ema35 < ema40 and ema40 < ema45 and ema45 < ema50 and ema50 < ema55
+sideways = not uptrend and not downtrend
+
+// Set band color based on trend
+bandColor = uptrend ? color.green : downtrend ? color.red : color.aqua
+
+// Plot EMAs for Hull Band without titles to hide them from settings
+Fi20 = plot(ema20, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi25 = plot(ema25, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi30 = plot(ema30, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi35 = plot(ema35, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi40 = plot(ema40, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi45 = plot(ema45, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi50 = plot(ema50, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+Fi55 = plot(ema55, title="Trading 2.O", color=bandColor, linewidth=1, transp=90, editable=false)
+
+transpSwitch = 40
+
+// Fill between EMAs for Hull Band with trend colors
+fill(Fi20, Fi25, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+fill(Fi25, Fi30, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+fill(Fi30, Fi35, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+fill(Fi35, Fi40, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+fill(Fi40, Fi45, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+fill(Fi45, Fi50, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+fill(Fi50, Fi55, title="Trading 2.O", color=bandColor, transp=transpSwitch, editable=false)
+
+// Input option for bar color change
+barColorChange = input(true, title="Change Bar Color")
+
+// Change candle color based on EMA cross
+barcolor(barColorChange and uptrend ? #04fc0c : na, title="Trading 2.O", editable = false)
+barcolor(barColorChange and downtrend ? #ff0000 : na, title="Trading 2.O", editable = false)
+barcolor(barColorChange and sideways ? color.aqua : na, title="Trading 2.O", editable = false)
+
+// Plot triangular signals for buy and sell
+// Buy and sell signals based on uptrend and downtrend conditions
+buy = uptrend and not uptrend[1]
+sell = downtrend and not downtrend[1]
+
+// Plot text signals for buy and sell
+plotshape(series=buy, title="Buy", text="Buy", style=shape.labelup, location=location.belowbar, color=color.green, textcolor=color.white, transp=0, size=size.tiny)
+plotshape(series=sell, title="Sell", text="Sell", style=shape.labeldown, location=location.abovebar, color=color.red, textcolor=color.white, transp=0, size=size.tiny)
